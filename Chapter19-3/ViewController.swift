@@ -18,6 +18,9 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate{
     var session = AVCaptureSession()
     var photoOutputObj = AVCapturePhotoOutput()
     
+    // シェアするイメージ
+    var shareImage: UIImage!
+    
     let notification = NotificationCenter.default
     
     // アラートを表示
@@ -47,6 +50,22 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate{
             name: UIDevice.orientationDidChangeNotification,
             object: nil)
     }
+    
+    // シェアボタンで実行する
+    @IBAction func shareAction(_ sender: Any) {
+        guard let shareImage = shareImage else {
+            return
+        }
+        // シェアする内容を作る
+        let sharedText = "シェアします。"
+        let sharedUrl = "http://oshige.com"
+        let activities = [sharedText, sharedUrl, shareImage] as [Any]
+        
+        // アクティビティコントローラを表示する
+        let activityVC = UIActivityViewController(activityItems: activities, applicationActivities: nil)
+        self.present(activityVC, animated: true, completion: nil)
+    }
+    
     
     // シャッターボタン
     @IBAction func takePhoto(_ sender: Any) {
@@ -178,6 +197,8 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate{
                 #selector(image(_ :didFinishSavingWithError: contextInfo: )),
                 nil
             )
+            // シェアするイメージに格納
+            shareImage = stillImage
         }
     }
     
@@ -199,4 +220,6 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate{
             print("アルバムへの追加　OK")
         }
     }
+    
+    
 }
